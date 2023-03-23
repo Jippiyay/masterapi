@@ -7,9 +7,9 @@
 #' @export store
 store <- function(obj) {
     tcres = tryCatch({
-        apiurl <- Sys.getenv("APIURL")
+        apiurl <- paste0(Sys.getenv("APIURL"), "/shiny-data")
         print(apiurl)
-        res <- httr::POST(apiurl + "/shiny-data", body = obj, encode = "json", verbose())
+        res <- httr::POST(apiurl, body = obj, encode = "json", verbose())
         print(res)
         if(res$status_code == 200){
           shiny::showNotification(duration = 5, "Prognose wurde gespeichert")
@@ -20,6 +20,7 @@ store <- function(obj) {
       }, warning = function(w) {
         shiny::showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nVersuche es bitte erneut.", type = "warning")
       }, error = function(e) {
+        print(e)
         shiny::showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nWende dich bitte an Johanna.", type = "error")
     })
 }
@@ -33,19 +34,20 @@ store <- function(obj) {
 #' @export track
 track <- function(event) {
   tcres = tryCatch({
-        apiurl <- Sys.getenv("APIURL")
+        apiurl <- paste0(Sys.getenv("APIURL"), "/event")
         print(apiurl)
-        res <- POST(apiurl + "/event", body = obj, encode = "json", verbose())
+        res <- POST(apiurl, body = event, encode = "json", verbose())
         print(res)
         if(res$status_code == 200){
           # showNotification(duration = 5, "Prognose wurde gespeichert")
         }
         else{
-          # showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nVersuche es bitte erneut.", type = "error")
+          shiny::showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nVersuche es bitte erneut.", type = "error")
         }
       }, warning = function(w) {
-        # showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nVersuche es bitte erneut.", type = "warning")
+        shiny::showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nVersuche es bitte erneut.", type = "warning")
       }, error = function(e) {
-        # showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nWende dich bitte an Johanna.", type = "error")
-  })
+        print(e)
+        shiny::showNotification(duration = 5,"Prognose konnte nicht gespeichert werden.\nWende dich bitte an Johanna.", type = "error")
+    })
 }
